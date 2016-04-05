@@ -15,45 +15,14 @@ def chess_reset():
     global turnC
     turnC = 'W'
     global state
-    state = list('kqbnrppppp..........PPPPPNBQRK')
-
+    state = list('kqbnrppppp..........PPPPPRNBQK')
 
 def chess_boardGet():
     # return the state of the game - one example is given below - note that the state has exactly 40 or 41 characters
 
     strOut = ''
 
-    strOut += '1 W\n'
-    strOut += 'kqbnr\n'
-    strOut += 'ppppp\n'
-    strOut += '.....\n'
-    strOut += '.....\n'
-    strOut += 'PPPPP\n'
-    strOut += 'RNBQK\n'
-    print strOut
-    print state
-    return strOut
-
-
-def chess_boardSet(strIn):
-    # read the state of the game from the provided argument and set your internal variables accordingly - note that the state has exactly 40 or 41 characters
-
-    print "TESTSet"
-    global state
-    global turnC
-    global turnN
-
-    nc, state[0:5], state[5:10], state[10:15], state[15:20], state[20:25], state[25:30], dummy = list(strIn.split('\n'))
-    turnn, turnC = nc.split(' ')
-    turnN = int(turnn)
-    print "STRIN"
-    print strIn
-    print turnN
-    print turnC
-    print state
-    strOut = ''
-
-    strOut += turnn
+    strOut += str(turnN)
     strOut += ' '
     strOut += turnC
     strOut += '\n'
@@ -63,16 +32,58 @@ def chess_boardSet(strIn):
     strOut += ''.join(state[15:20]) + '\n'
     strOut += ''.join(state[20:25]) + '\n'
     strOut += ''.join(state[25:30]) + '\n'
-    print "STROUT"
-    print strOut
-    print "STROUT"
+
+    return strOut
+
+def chess_boardSet(strIn):
+    # read the state of the game from the provided argument and set your internal variables accordingly - note that the state has exactly 40 or 41 characters
+
+    global state
+    global turnC
+    global turnN
+
+    strIn = str(strIn)
+    turnn, turnC, state[0:5], state[5:10], state[10:15], state[15:20], state[20:25], state[25:30] = list(strIn.split())
+
+    turnN = int(turnn)
+
+    strOut = ''
+
+    strOut += str(turnN)
+    strOut += ' '
+    strOut += turnC
+    strOut += '\n'
+    strOut += ''.join(state[0:5]) + '\n'
+    strOut += ''.join(state[5:10]) + '\n'
+    strOut += ''.join(state[10:15]) + '\n'
+    strOut += ''.join(state[15:20]) + '\n'
+    strOut += ''.join(state[20:25]) + '\n'
+    strOut += ''.join(state[25:30]) + '\n'
+
     return strOut
 
 
 def chess_winner():
     # determine the winner of the current state of the game and return '?' or '=' or 'W' or 'B' - note that we are returning a character and not a string
 
-    return '?'
+    c = 0
+    w = ''
+
+    print turnN
+    if turnN > 40:
+        return '='
+
+    while c < 30:
+        if state[c] == 'k':
+            if w == 'W':
+                return '?'
+            w = 'B'
+        if state[c] == 'K':
+            if w == 'B':
+                return '?'
+            w = 'W'
+        c += 1
+    return w
 
 
 def chess_isValid(intX, intY):
@@ -94,18 +105,32 @@ def chess_isValid(intX, intY):
 def chess_isEnemy(strPiece):
     # with reference to the state of the game, return whether the provided argument is a piece from the side not on move - note that we could but should not use the other is() functions in here but probably
 
+    if turnC == 'B':
+        if strPiece.isupper():
+            return True
+    elif turnC == 'W':
+        if strPiece.islower():
+            return True
     return False
 
 
 def chess_isOwn(strPiece):
     # with reference to the state of the game, return whether the provided argument is a piece from the side on move - note that we could but should not use the other is() functions in here but probably
 
+    if turnC == 'B':
+        if strPiece.islower():
+            return True
+    elif turnC == 'W':
+        if strPiece.isupper():
+            return True
     return False
 
 
 def chess_isNothing(strPiece):
     # return whether the provided argument is not a piece / is an empty field - note that we could but should not use the other is() functions in here but probably
 
+    if strPiece == '.':
+        return True
     return False
 
 
